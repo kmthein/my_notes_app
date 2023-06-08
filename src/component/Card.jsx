@@ -1,21 +1,26 @@
 import React, { useContext, useState } from "react";
-import { ContextData } from "../store/Context";
 import { AiFillDelete } from "react-icons/ai"
+import { useDispatch } from "react-redux";
+import { taskAction } from "../store";
 
-const Card = ({ blog }) => {
+const Card = ({ task }) => {
   const [checked, setChecked] = useState(false);
 
-  const {toggleDone, deleteTask} = useContext(ContextData);
+  const dispatch = useDispatch();
+
+  const deleteHandler = (id) => {
+    dispatch(taskAction.removeTask(id))
+  }
 
   return (
     <div className="w-[100%] sm:w-[80%] lg:w-[62%] mx-auto p-3 py-5 mb-[30px] rounded-md bg-pink-100">
       <div className="flex justify-between">
-        {blog.done ? (
+        {task.done ? (
           <del>
-            <h3>{blog.task}</h3>
+            <h3>{task.task}</h3>
           </del>
         ) : (
-          <h3>{blog.task}</h3>
+          <h3>{task.task}</h3>
         )}
         <div className="flex items-start">
         {checked ? (
@@ -25,7 +30,8 @@ const Card = ({ blog }) => {
             checked
             onChange={(e) => {
               setChecked(!checked);
-              toggleDone(blog.id, e.target.checked)
+              dispatch(taskAction.toggleDone({id: task.id, checked: e.target.checked}))
+              // toggleDone(task.id, e.target.checked)
             }}
             value={checked}
           />
@@ -35,12 +41,13 @@ const Card = ({ blog }) => {
             className="w-4 cursor-pointer mt-1"
             onChange={(e) => {
               setChecked(!checked);
-              toggleDone(blog.id, e.target.checked)
+              dispatch(taskAction.toggleDone({id: task.id, checked: e.target.checked}))
+              // toggleDone(task.id, e.target.checked)
             }}
             value={checked}
           />
         )}
-        <AiFillDelete className="ml-3 text-red-700 text-xl cursor-pointer" title="Remove" onClick={() => deleteTask(blog.id)} />
+        <AiFillDelete onClick={() => deleteHandler(task.id)} className="ml-3 text-red-700 text-xl cursor-pointer" title="Remove"/>
         </div>
       </div>
     </div>

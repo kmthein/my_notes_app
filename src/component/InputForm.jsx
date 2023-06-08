@@ -1,26 +1,26 @@
 import React, { useContext, useRef } from "react";
-import { ContextData } from "../store/Context";
+import { useDispatch, useSelector } from "react-redux";
+import { taskAction } from "../store";
 
 const InputForm = () => {
   const today = new Date();
-  console.log(today);
   const currentTime = `${today.getHours()}:${today.getMinutes()}`;
-  console.log(currentTime);
 
-  const {blogs, addTask} = useContext(ContextData);
+  const tasks = useSelector(state => state.tasks);
 
   const taskRef = useRef();
+
+  const dispatch = useDispatch();
 
   const submitNewTask = (e) => {
     e.preventDefault();
     let newTask = taskRef.current.value;
-    const newId = blogs.length + 1;
-    addTask({
-        id: newId,
-        task: newTask,
-        done: false
-    })
-    console.log(blogs);
+    const newId = tasks.length + 1;
+    dispatch(taskAction.addTask({
+      id: newId,
+      task: newTask,
+      done: false
+    }))
     taskRef.current.value = "";
   }
 
